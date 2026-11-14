@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Model Arena · Satin Labs</title>
+<style>
+:root {
+  --bg: #ffffff; --bg-subtle: #f6f8fa; --border: #d1d9e0; --border-muted: #d8dee4;
+  --fg: #1f2328; --muted: #59636e; --link: #0969da; --green: #1a7f37; --green-bg: #dafbe1;
+  --btn: #f6f8fa; --primary: #1f883d; --primary-fg: #ffffff; --danger: #d1242f;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", "Noto Sans Thai", Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0d1117; --bg-subtle: #151b23; --border: #3d444d; --border-muted: #2f353d;
+    --fg: #f0f6fc; --muted: #9198a1; --link: #4493f8; --green: #3fb950; --green-bg: #12261e;
+    --btn: #212830; --primary: #238636; --primary-fg: #ffffff; --danger: #f85149; color-scheme: dark; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.5 var(--sans); }
+a { color: var(--link); text-decoration: none; }
+.topbar { background: var(--bg-subtle); border-bottom: 1px solid var(--border); padding: 12px max(16px, env(safe-area-inset-left)); display: flex; align-items: center; gap: 12px; }
+.mark { width: 32px; height: 32px; border-radius: 6px; background: var(--fg); color: var(--bg); display: grid; place-items: center; font: 700 15px var(--mono); }
+.crumb b { font-weight: 600; }
+.crumb a { color: var(--fg); }
+.wrap { max-width: 1280px; margin: 0 auto; padding: 24px max(16px, env(safe-area-inset-left)); }
+h1 { font-size: 24px; font-weight: 600; margin: 0 0 4px; }
+.lead { color: var(--muted); margin: 0 0 20px; }
+.box { border: 1px solid var(--border); border-radius: 6px; padding: 16px; margin-bottom: 16px; }
+label.lbl { display: block; font-weight: 600; margin-bottom: 6px; }
+textarea, input[type=text] { width: 100%; border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; font: 14px/1.5 var(--sans); background: var(--bg); color: var(--fg); resize: vertical; }
+textarea:focus, input:focus { outline: 2px solid var(--link); outline-offset: -1px; border-color: var(--link); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.chip { border: 1px solid var(--border); border-radius: 2em; padding: 4px 12px; cursor: pointer; user-select: none; background: var(--btn); font-size: 13px; }
+.chip input { margin: 0 6px 0 0; vertical-align: -2px; }
+.row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 12px; }
+details summary { cursor: pointer; color: var(--muted); margin-top: 12px; }
+details .inner { margin-top: 8px; display: grid; gap: 8px; }
+.btn { border: 1px solid var(--border); background: var(--btn); color: var(--fg); border-radius: 6px; padding: 5px 16px; font: 500 14px var(--sans); cursor: pointer; }
+.btn.primary { background: var(--primary); color: var(--primary-fg); border-color: rgba(31,35,40,.15); }
+.btn:disabled { opacity: .5; cursor: default; }
+.btn:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
+.blind { display: flex; gap: 6px; align-items: center; color: var(--muted); font-size: 13px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 16px; margin-bottom: 16px; }
+.card { border: 1px solid var(--border); border-radius: 6px; display: flex; flex-direction: column; min-width: 0; }
+.card.win { border-color: var(--green); box-shadow: 0 0 0 1px var(--green); }
+.card-h { background: var(--bg-subtle); border-bottom: 1px solid var(--border); padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; gap: 8px; border-radius: 6px 6px 0 0; }
+.card-h b { font-weight: 600; }
+.status { font: 12px var(--mono); color: var(--muted); }
+.out { padding: 16px; white-space: pre-wrap; word-break: break-word; flex: 1; min-height: 160px; font-size: 14px; }
+.out.err { color: var(--danger); }
+.stats { border-top: 1px solid var(--border-muted); padding: 8px 16px; font: 12px var(--mono); color: var(--muted); display: flex; flex-wrap: wrap; gap: 12px; }
+.card-f { padding: 8px 16px 12px; }
+.tbls { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 16px; }
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+th, td { border: 1px solid var(--border); padding: 6px 12px; text-align: left; }
+th { background: var(--bg-subtle); font-weight: 600; }
+td.num, th.num { text-align: right; }
+.bar { height: 6px; background: var(--border-muted); border-radius: 3px; overflow: hidden; margin-top: 4px; }
+.bar i { display: block; height: 100%; background: var(--green); }
+.note { color: var(--muted); font-size: 12px; margin-top: 8px; }
+footer { color: var(--muted); font-size: 12px; border-top: 1px solid var(--border-muted); padding-top: 16px; margin-top: 24px; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="mark" aria-hidden="true">S</div>
+  <div class="crumb"><a href="https://satinlabs.dev"><b>satinlabs</b></a> / model-arena</div>
+</div>
+
+<div class="wrap">
+  <h1>Model Arena</h1>
+  <p class="lead">Ask once, watch several AI models answer side by side, then vote for the best. Names stay hidden until you vote. ถามภาษาไทยได้</p>
+
+  <div class="box">
+    <label class="lbl">Models</label>
+    <div class="chips" id="chips"></div>
+    <label class="lbl" for="prompt">Prompt</label>
+    <textarea id="prompt" rows="3" maxlength="2000" placeholder="เช่น เขียนแคปชั่นโปรโมทร้านกาแฟในภูเก็ต 2 บรรทัด">เขียนแคปชั่นโปรโมทร้านกาแฟในภูเก็ต 2 บรรทัด</textarea>
+    <details>
+      <summary>Advanced</summary>
+      <div class="inner">
+        <label class="lbl" for="system">System prompt</label>
+        <input type="text" id="system" maxlength="1000" placeholder="You are a helpful assistant.">
+        <label class="lbl" for="temp">Temperature <span id="tempv">0.7</span></label>
+        <input type="range" id="temp" min="0" max="1.5" step="0.1" value="0.7">
+      </div>
+    </details>
+    <div class="row">
+      <button class="btn primary" id="run">Run</button>
+      <label class="blind"><input type="checkbox" id="blind" checked> Blind mode (hide names until vote)</label>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="box">
+    <label class="lbl">Leaderboard <span class="note" id="total"></span></label>
+    <div class="tbls">
+      <div><div class="note">ภาษาไทย</div><table id="lb-th"></table></div>
+      <div><div class="note">English</div><table id="lb-en"></table></div>
+    </div>
+    <p class="note">Win rate = wins ÷ battles the model appeared in. Small vote counts are noisy.</p>
+  </div>
+
+  <footer>Built by <a href="https://satinlabs.dev">Satin Labs</a>. Free-tier models; please do not send personal information.</footer>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+let MODELS = [];
+let current = null;
+
+async function loadModels() {
+  MODELS = await (await fetch("api/models")).json();
+  $("chips").innerHTML = "";
+  MODELS.forEach((m, i) => {
+    const label = document.createElement("label");
+    label.className = "chip";
+    const box = document.createElement("input");
+    box.type = "checkbox"; box.value = m.key; box.checked = i < 3;
+    label.append(box, document.createTextNode(m.label));
+    $("chips").appendChild(label);
+  });
+}
+
+function selected() {
+  return [...$("chips").querySelectorAll("input:checked")].map((b) => b.value);
+}
+
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+
+function makeCard(key, name) {
+  const card = document.createElement("div");
+  card.className = "card";
+  card.innerHTML = '<div class="card-h"><b></b><span class="status">waiting…</span></div><div class="out"></div><div class="stats"></div><div class="card-f"><button class="btn" disabled>👍 This is best</button></div>';
+  card.querySelector("b").textContent = name;
+  card.dataset.key = key;
+  $("grid").appendChild(card);
+  return card;
+}
+
+async function stream(key, card, payload) {
+  const out = card.querySelector(".out");
+  const status = card.querySelector(".status");
+  status.textContent = "thinking…";
+  try {
+    const res = await fetch("api/run", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...payload, model: key }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || "Request failed");
+    }
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const parts = buffer.split("\n\n");
+      buffer = parts.pop();
+      for (const part of parts) {
+        if (!part.startsWith("data: ")) continue;
+        const ev = JSON.parse(part.slice(6));
+        if (ev.type === "token") { out.textContent += ev.text; status.textContent = "streaming…"; }
+        if (ev.type === "error") throw new Error(ev.message);
+        if (ev.type === "done") {
+          status.textContent = "done";
+          const s = card.querySelector(".stats");
+          s.textContent = `⚡ ${ev.first_token_s}s first · ${ev.tokens_per_s} tok/s · ${ev.tokens} tok · ${ev.cost_thb === 0 ? "free" : "฿" + ev.cost_thb + " if paid"}`;
+        }
+      }
+    }
+    return true;
+  } catch (e) {
+    out.classList.add("err");
+    out.textContent = e.message;
+    status.textContent = "error";
+    return false;
+  }
+}
+
+async function run() {
+  const keys = selected();
+  const prompt = $("prompt").value.trim();
+  if (keys.length < 2) { alertBox("Pick at least 2 models."); return; }
+  if (!prompt) return;
+  $("run").disabled = true;
+  $("grid").innerHTML = "";
+  const blind = $("blind").checked;
+  const order = blind ? shuffle([...keys]) : keys;
+  const payload = { prompt, system: $("system").value, temperature: parseFloat($("temp").value) };
+  const cards = order.map((k, i) => makeCard(k, blind ? "Model " + "ABCD"[i] : MODELS.find((m) => m.key === k).label));
+  current = { keys: order, prompt, blind, cards };
+  const ok = await Promise.all(order.map((k, i) => stream(k, cards[i], payload)));
+  cards.forEach((card, i) => {
+    const b = card.querySelector(".card-f button");
+    if (ok.filter(Boolean).length >= 2 && ok[i]) { b.disabled = false; b.onclick = () => vote(card.dataset.key); }
+  });
+  $("run").disabled = false;
+}
+
+function alertBox(text) {
+  $("grid").innerHTML = "";
+  const d = document.createElement("div");
+  d.className = "box"; d.textContent = text;
+  $("grid").appendChild(d);
+}
+
+async function vote(winner) {
+  const { keys, prompt, cards } = current;
+  cards.forEach((c) => (c.querySelector(".card-f button").disabled = true));
+  const res = await fetch("api/vote", {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ winner, models: keys, prompt }),
+  });
+  if (!res.ok) return;
+  const { labels } = await res.json();
+  cards.forEach((c) => {
+    c.querySelector("b").textContent = labels[c.dataset.key];
+    if (c.dataset.key === winner) { c.classList.add("win"); c.querySelector(".card-f button").textContent = "🏆 Your pick"; }
+  });
+  loadBoard();
+}
+
+function fillTable(id, rows) {
+  const t = $(id);
+  t.innerHTML = '<thead><tr><th>Model</th><th class="num">Win rate</th><th class="num">Battles</th></tr></thead>';
+  const body = document.createElement("tbody");
+  rows.forEach((r) => {
+    const tr = document.createElement("tr");
+    const name = document.createElement("td");
+    name.textContent = r.label;
+    const bar = document.createElement("div"); bar.className = "bar";
+    const fill = document.createElement("i"); fill.style.width = r.win_rate + "%";
+    bar.appendChild(fill); name.appendChild(bar);
+    const rate = document.createElement("td"); rate.className = "num"; rate.textContent = r.games ? r.win_rate + "%" : "–";
+    const games = document.createElement("td"); games.className = "num"; games.textContent = r.games;
+    tr.append(name, rate, games);
+    body.appendChild(tr);
+  });
+  t.appendChild(body);
+}
+
+async function loadBoard() {
+  const data = await (await fetch("api/leaderboard")).json();
+  fillTable("lb-th", data.th);
+  fillTable("lb-en", data.en);
+  $("total").textContent = `· ${data.total_votes} votes`;
+}
+
+$("temp").oninput = () => ($("tempv").textContent = $("temp").value);
+$("run").onclick = run;
+loadModels();
+loadBoard();
+</script>
+</body>
+</html>
