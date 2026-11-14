@@ -19,7 +19,7 @@ MODELS = {
     "gpt-oss-120b": {"provider": "groq", "id": "openai/gpt-oss-120b", "label": "gpt-oss 120B", "usd_per_m": 0.60},
     "gpt-oss-20b": {"provider": "groq", "id": "openai/gpt-oss-20b", "label": "gpt-oss 20B", "usd_per_m": 0.30},
     "qwen-27b": {"provider": "groq", "id": "qwen/qwen3.8-27b", "label": "Qwen 27B", "usd_per_m": 0.40},
-    "llama-3b-local": {"provider": "ollama", "id": "llama3.2", "label": "Llama 3B (my server)", "usd_per_m": 0.0},
+    "llama-3b-local": {"provider": "ollama", "id": os.environ.get("LOCAL_MODEL", "llama3.2"), "label": "Llama (my server)", "usd_per_m": 0.0},
 }
 USD_TO_THB = 35
 MAX_PROMPT = 2000

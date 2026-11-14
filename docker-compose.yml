@@ -1,0 +1,23 @@
+services:
+  arena:
+    build: .
+    container_name: arena
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+      - DB_PATH=/app/data/arena.db
+      - LOCAL_MODEL=llama3.2:1b
+    volumes:
+      - arena_data:/app/data
+    networks: [web, ollama_net]
+
+volumes:
+  arena_data:
+
+networks:
+  web:
+    external: true
+  ollama_net:
+    external: true
+    name: line-receptionist_internal
